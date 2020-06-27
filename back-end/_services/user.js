@@ -33,6 +33,19 @@ module.exports = {
     }
 
     // save user
-    return await User.create(userParam);
+    const { id } = await User.create(userParam);
+
+    const token = jwt.sign({ sub: id }, config.secret);
+
+    return {
+      id,
+      token,
+    };
+  },
+  async getById(id) {
+    return await User.findByPk(id, {
+      attributes: { exclude: ["password", "createdAt", "updatedAt"] },
+      raw: true,
+    });
   },
 };
